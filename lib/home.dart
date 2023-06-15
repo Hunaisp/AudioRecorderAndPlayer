@@ -14,21 +14,30 @@ class Home extends StatefulWidget {
 }
 dynamic audioFile;
 dynamic path;
+dynamic subscription;
 class _HomeState extends State<Home> {
   final recorder = FlutterSoundRecorder();
   bool isRecorderReady = false;
 
   @override
   void initState() {
-    // TODO: implement initState
+
     super.initState();
+    subscription = recorder.onProgress!.listen((RecordingDisposition disposition) {
+
+      setState(() {
+
+
+      });
+    });
     initRecorder();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
+
     super.dispose();
+    subscription.cancel();
     recorder.closeRecorder();
   }
 
@@ -38,15 +47,16 @@ class _HomeState extends State<Home> {
       body: Center(
         child: Column(
           children: [
+            SizedBox(height: 300,),
             StreamBuilder<RecordingDisposition>(
               builder: (context, snapshot) {
                 final duration =
-                    snapshot.hasData ? snapshot.data!.duration : Duration.zero;
-                String twoDigits(int n) => n.toString().padLeft(10);
+                snapshot.hasData ? snapshot.data!.duration : Duration.zero;
+                String twoDigits(int n) => n.toString().padLeft(2, '0'); // Update padding to 2
                 final twoDigitMinutes =
-                    twoDigits(duration.inMinutes.remainder(60));
+                twoDigits(duration.inMinutes.remainder(60));
                 final twoDigitSeconds =
-                    twoDigits(duration.inSeconds.remainder(60));
+                twoDigits(duration.inSeconds.remainder(60));
                 return Text('$twoDigitMinutes:$twoDigitSeconds');
               },
               stream: recorder.onProgress,
@@ -65,12 +75,13 @@ class _HomeState extends State<Home> {
                 onPressed: () {
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (_) => AudioList(
-                            path: path,
-                          )));
+                        path: path,
+                      )));
                 },
                 child: Text('Next'))
           ],
         ),
+
       ),
     );
   }

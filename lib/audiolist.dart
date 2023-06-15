@@ -40,13 +40,20 @@ class _AudioListState extends State<AudioList> {
   }
   @override
   Widget build(BuildContext context) {
+    String formatTime(Duration duration) {
+      // Define your logic to format the duration here
+      // For example, converting it to a string in the format 'mm:ss'
+      String minutes = (duration.inMinutes % 60).toString().padLeft(2, '0');
+      String seconds = (duration.inSeconds % 60).toString().padLeft(2, '0');
+      return '$minutes:$seconds';
+    }
     return Scaffold(body: Column(children: [
       Slider(min: 0,max: duration.inSeconds.toDouble(),value: position.inSeconds.toDouble(),onChanged: (value)async{
         final position=Duration(seconds: value.toInt());
         await audioPlayer.seek(position);
         await audioPlayer.resume();
       },),SizedBox(height: 40,),Row(children: [
-        // Text(formatTime(position)),Text(formatTime(duration-position))
+        Text(formatTime(position)),Text(formatTime(duration-position))
       ],),IconButton(onPressed: ()async{
 
         if(isPlaying){
