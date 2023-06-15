@@ -1,13 +1,15 @@
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 class AudioList extends StatefulWidget {
-  const AudioList({super.key});
+  final path;
+  const AudioList({super.key,required this.path});
 
   @override
   State<AudioList> createState() => _AudioListState();
 }
 
 class _AudioListState extends State<AudioList> {
+
   final audioPlayer=AudioPlayer();
   bool isPlaying=false;
   Duration duration=Duration.zero;
@@ -50,8 +52,8 @@ class _AudioListState extends State<AudioList> {
         if(isPlaying){
           await audioPlayer.pause();
         }else{
-          String url='';
-          await audioPlayer.play(url as Source);
+          String url=widget.path;
+          audioPlayer.play(UrlSource(url));
         }
 
       }, icon:Icon(isPlaying?Icons.pause:Icons.play_arrow))
